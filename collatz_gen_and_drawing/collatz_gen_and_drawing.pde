@@ -21,25 +21,40 @@ import java.util.ArrayList;
 ArrayList<CollatzPoint> points;
 final int HEIGHT = 20;
 int heightRemaning = 20;
+int alpha = 5;
+int mag = 50;
+int size = 20;
 
 void setup() {
   // set the size of the display
   size(1280, 720);
   // lock hte framerate, which will determine how fast the tree grows
   frameRate(10);
-  // set the origin of the scetch to be the botton right side
+  // set the origin of the sketch to be the botton right side
   translate(0, 100);
 
   /*
    * set the initial point to 1, that we will later branch up
    */
   points = new ArrayList();
-  points.add(new CollatzPoint(1, new Point(10, 10), 1, false, null));
+  points.add(new CollatzPoint(1, new Point(10, 10), 0, false, null));
   ellipse(20, -20, 20, 20);
 }
 
 void draw() {
   generate(points, heightRemaning);
+}
+
+ /*
+   * Draw one new node
+   */
+void drawCircle(CollatzPoint parentPoint, CollatzPoint currPoint){
+
+  stroke(100,100,100);
+  line(parentPoint.getX(),parentPoint.getY(),currPoint.getX(), currPoint.getY());
+  
+  ellipse(currPoint.getX(), currPoint.getY(), size, size);
+  
 }
 
 public void generate(ArrayList<CollatzPoint> points, int heightRemaning) {
@@ -51,9 +66,7 @@ public void generate(ArrayList<CollatzPoint> points, int heightRemaning) {
    * End testing
    */
 
-  System.out.println("before loop");
   if (heightRemaning > 0) {
-    System.out.println("in loop");
 
     /*
        * If we still need to continue drawing the tree
@@ -70,24 +83,22 @@ public void generate(ArrayList<CollatzPoint> points, int heightRemaning) {
        */
 
       // add the even point
-      CollatzPoint newPoint = new CollatzPoint(val.value * 2, generateNewPoint(val.position, true), 10, true, 
-        val);
+      CollatzPoint newPoint = generateNewCollatzPoint(val, true, val.value*2);
       newPoints.add(newPoint);
       System.out.println(newPoint.value + " is left node: " + newPoint.isLeftNode);
-
-      ellipse((float) newPoint.position.getX(), (float) newPoint.position.getY(), 20, 20);
-
+      
+      drawCircle(val,newPoint);
+  
       /*
      * See if there is an odd branch
        */
-      float possiblePoint = (float) (((float) val.value - 1.0) / 3.0);
+      float possiblePoint = (float) (((float) val.value - 1.0) / 3.0);  
 
       if (possiblePoint == (int) possiblePoint && (int) possiblePoint != 0 && (int) possiblePoint != 1) {
-        newPoint = new CollatzPoint((int) possiblePoint, generateNewPoint(val.position, false), 10, false, 
-          val);
+        newPoint = generateNewCollatzPoint(val, false, (int) possiblePoint);
         newPoints.add(newPoint);
-
-        ellipse((float) newPoint.position.getX(), (float) newPoint.position.getY(), 20, 20);
+        drawCircle(val,newPoint);
+   
         System.out.println(newPoint.value + " is left node: " + newPoint.isLeftNode);
       }
     }
@@ -101,34 +112,31 @@ public void generate(ArrayList<CollatzPoint> points, int heightRemaning) {
     --this.heightRemaning;
 
     System.out.println("heightRemaning: " + heightRemaning);
-
-    // if (heightRemaning > 0) {
-    // // System.out.println("heightRemaning: " + heightRemaning);
-    // generate(newPoints, --heightRemaning);
-    // }
-
     System.out.println("leaving loop");
   }
-
-  System.out.println("left loop");
 }
 
-public Point generateNewPoint(Point parent, Boolean isLeftNode) {
+ /*
+   * Generate a new collatz point
+   */
+
+public CollatzPoint generateNewCollatzPoint(CollatzPoint parentPoint, Boolean isLeftNode, int value) {
+  float newTheta = 0;
   if (isLeftNode) {
-    System.out.println("parent.getX() + 20: " + (parent.getX() + 20));
-    System.out.println("parent.getY() + 20: " + (parent.getY() + 20));
-    // TODO curve down
-    return new Point((int) (parent.getX() + 20), (int) (parent.getY() + 20));
+    newTheta = float(parentPoint.theta + alpha); 
+   
   } else {
-    System.out.println("parent.getX() + 20: " + (parent.getX() + 20));
-    System.out.println("parent.getY() - 20: " + (parent.getY() - 20));
-    // TODO curve up
-    return new Point((int) (parent.getX() + 20), (int) (parent.getY() - 20));
+    newTheta = float(parentPoint.theta - alpha); 
   }
+  
+  double newX = parentPoint.position.getX() + mag*cos(radians(newTheta));
+  double newY = parentPoint.position.getY() + mag*sin(radians(newTheta));
+  return new CollatzPoint(value, new Point((int) newX, (int) newY), (int) newTheta, true, 
+        parentPoint);
 }
 
 /*
-     * Node class that contains all the information about a point
+     * Node class that contains all the information about a collatz point
  */
 
 public class CollatzPoint {
@@ -136,11 +144,11 @@ public class CollatzPoint {
 
   public int value;
   public Point position;
-  public double theta;
+  public int theta;
   // if 'isLeftNode' == 'true' that means it is an even number and should curve down 
   public boolean isLeftNode;
 
-  public CollatzPoint(int value, Point position, double theta, boolean isLeftNode, CollatzPoint parrent) {
+  public CollatzPoint(int value, Point position, int theta, boolean isLeftNode, CollatzPoint parent) {
     this.value = value;
     this.position = position;
     this.theta = theta;
@@ -148,4 +156,13 @@ public class CollatzPoint {
 
     this.parent = parent;
   }
+  
+  public float getX() {
+    return (float ) position.getX();
+  }
+  
+   public float getY() {
+      return (float ) position.getY();
+  }
+    
 }
