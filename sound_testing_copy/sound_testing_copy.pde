@@ -109,7 +109,7 @@ void draw() {
     }
     
     if (lineLength >= width / 4.0) {
-       System.out.println("LESS THAT");
+       //System.out.println("LESS THAT");
        //lineLength = width / 2.0 - radius;
        lineLength = width / 4.0;
     }
