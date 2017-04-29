@@ -24,6 +24,21 @@ class Slider {
     this.sposMax = xpos + swidth - sheight;
     this.loose = l;
   }
+  
+  public void setSlider(int pos) {
+    if (pos < 0) {
+      spos = sposMin;
+      this.newspos = spos;
+      System.out.println("spos " + spos);
+    } else if (pos > swidth) {
+      spos = sposMax;
+      this.newspos = spos;
+      System.out.println("spos " + spos);
+    } else {
+      spos = pos;
+      this.newspos = spos;
+    }
+  }
 
   void update() {
     

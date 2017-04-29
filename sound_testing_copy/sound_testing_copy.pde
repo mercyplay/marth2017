@@ -12,8 +12,8 @@ HighPass highPass;
 
 color lineColor;
 
-Slider slider1;
-Slider slider2;
+//Slider slider1;
+//Slider slider2;
 
 void setup() {
   size(1280, 720);
@@ -50,8 +50,8 @@ void setup() {
   //highPass.freq(15000);
     
   // Slider
-  slider1 = new Slider(0, 8, width, 16, 1);
-  slider2 = new Slider(0, 32, width, 16, 1);
+  //slider1 = new Slider(0, 8, width, 16, 1);
+  //slider2 = new Slider(0, 32, width, 16, 1);
   
   /*
    * Testing : pan
@@ -88,7 +88,7 @@ void draw() {
    //TODO : too small
   //float lineWidth = circumfrence / bands;
   float lineWidth = 3;
-  float theta = 2.0 * PI / (bands - (bands / 4.0));
+  float theta = 2.0 * (bands / 4.0);
   
   // create the lines around the circle
   pushMatrix();
@@ -100,7 +100,7 @@ void draw() {
     pushMatrix();
     rotate(theta * i);
             
-    float lineLength = map(abs(spectrum[i] * 50000000.0), 0, 1000, 20, 50);
+    float lineLength = map(abs(spectrum[i] * 1000000.0), 0, 1000, 20, 50);
     
     if (lineLength < radius) {
       //System.out.println(radius);
@@ -117,6 +117,11 @@ void draw() {
     // The result of the FFT is normalized
     // draw the line for frequency band i scaling it up by 5 to get more amplitude
     
+    stroke(0);
+    strokeWeight(lineWidth * 2);
+    line(0, 0, lineLength, 0);
+
+    stroke(lineColor);
     strokeWeight(lineWidth);
     line(0, 0, lineLength, 0);
     
@@ -134,12 +139,12 @@ void draw() {
   ellipse((float) (width / 2), (float) (height / 2), radius, radius);
   
   // draw the sliders
-  slider1.update();
-  slider1.display();
+  //slider1.update();
+  //slider1.display();
   
-  slider2.update();
-  slider2.display();
+  //slider2.update();
+  //slider2.display();
   
-  int slider1Value = slider1.getValue();
-  int slider2Value = slider2.getValue();
+  //int slider1Value = slider1.getValue();
+  //int slider2Value = slider2.getValue();
 }
