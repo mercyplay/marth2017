@@ -1,0 +1,4 @@
+TODO:
+
+- merge 'basicDrawingCircle' drawing implementation with 'collatz_gen_and_drawing'
+
